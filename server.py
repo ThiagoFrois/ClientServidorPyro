@@ -107,13 +107,13 @@ while(True):
             #print(timeR1I)
             clientCallR1._pyroClaimOwnership()
             clientCallR1.notification(3)
-            print("Notificação para o recurso 1")
+            #print("Notificação para o recurso 1")
     if not tokenR2:
         timeR2 = time.time() - timeR2I
         if timeR2 == 3:
             clientCallR2._pyroClaimOwnership()
             clientCallR2.notification(4)
-            print("Notificação para o recurso 2")
+            #print("Notificação para o recurso 2")
 
 
          
