@@ -148,40 +148,41 @@ while(True):
         #exe = True
         r = pServer.requisitar(1, callback)
         
-        print('\n')
-        print(r)
-        print('\n')
+        #print('\n')
+        #print(r)
+        #print('\n')
 
         #mB = base64.b64encode(r['data'].encode('utf-8'))
         #print(repr(mB))
         #tk = "tken"
         #print(type(tk))
         #print(tk)
-       
-        d = r[2]
-        hashM = SHA256.new(d.encode())
-        #dSign = bytes(r[1]['data'], 'utf-8')
-        sg = r[1].encode('ISO-8859-1')
-        #print("Tipo: " + str(r[2]) + '\n')
-        print("\nPubO: " + str(repr(r[0]) + '\n'))
-        print("\nPub: " + repr(r[0].encode('ISO-8859-1')) + '\n')
-        print("Data: " + repr(sg) + '\n')
-
-        try: 
-            pub = RSA.import_key(r[0])
-
-            print("Public Key: " + str(repr(pub)))
-            print("Entrou")
-            pkcs1_15.new(pub).verify(hashM, sg)
-            print("Assinatura Válida.")
-        except (ValueError, TypeError):
-            print("Assinatura Inválida.")
-
+         
         if r != None:
+            d = r[2]
+            hashM = SHA256.new(d.encode())
+            #dSign = bytes(r[1]['data'], 'utf-8')
+            sg = r[1].encode('ISO-8859-1')
+            #print("Tipo: " + str(r[2]) + '\n')
+            #print("\nPubO: " + str(repr(r[0]) + '\n'))
+            #print("\nPub: " + repr(r[0].encode('ISO-8859-1')) + '\n')
+            #print("Data: " + repr(sg) + '\n')
+            try: 
+                pub = RSA.import_key(r[0])
+
+                #print("Public Key: " + str(repr(pub)))
+                #print("Entrou")
+                pkcs1_15.new(pub).verify(hashM, sg)
+                print("Assinatura Válida.")
+                time.sleep(1)
+            except (ValueError, TypeError):
+                print("Assinatura Inválida.")
+
+        #if r != None:
             #print("Recebeu a chave pública.")
             #print((bytes(r[1]['data'], 'utf-8')))
             #print("Digital signature:" + str(repr(r.encode('ISO-8859-1'))+"\n"))
-            break
+            #break
     elif num == LIBERAR_R1 and tokenR1 == True:
         #exe = True
         pServer.liberar(1)
