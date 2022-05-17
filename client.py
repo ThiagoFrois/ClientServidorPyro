@@ -1,3 +1,11 @@
+from Crypto.Signature import pkcs1_15
+from Crypto.Signature import pss
+from Crypto.Hash import SHA256
+from Crypto.PublicKey import RSA
+from Crypto import Random
+
+import base64
+
 from _thread import *
 import threading
 import time
@@ -8,7 +16,7 @@ import signal
 import sys
 import os
 import Pyro5.api
-from Pyro5.api import expose, callback, Daemon, Proxy, oneway
+from Pyro5.api import expose, callback, Daemon, Proxy, oneway, register_class_to_dict, register_dict_to_class
 
 REQUISICAO = 0
 LIBERACAO = 1
@@ -38,6 +46,28 @@ signal.signal(signal.SIGALRM, timeout)
 def pyroThread():
     daemon.requestLoop(); 
 
+def pubClassToDict(object):
+    return {
+        "__class__": "pKey",
+    }
+
+def pubDictToClass(classname, d):
+    return RSA.RsaKey
+
+def signClassToDict(object):
+    return {
+        "__class__" : "digitalSign"
+    }
+
+def signDictToClass(classname, d):
+    return bytes
+
+#register_dict_to_class("pKey", pubDictToClass)
+#register_class_to_dict(RSA.RsaKey, pubClassToDict)
+
+#register_dict_to_class("digitalSign", signDictToClass)
+#register_class_to_dict(bytes, signClassToDict)
+
 class Client(object):
     @expose
     @oneway
@@ -64,7 +94,6 @@ daemon.register(callback)
 
 listener = threading.Thread(target=pyroThread, daemon=True)
 listener.start()
-
 i = 0
 num = 5
 while(True):
@@ -117,7 +146,42 @@ while(True):
         break
     elif num == REQUISITAR_R1 and tokenR1 != True:
         #exe = True
-        pServer.requisitar(1, callback)
+        r = pServer.requisitar(1, callback)
+        
+        print('\n')
+        print(r)
+        print('\n')
+
+        #mB = base64.b64encode(r['data'].encode('utf-8'))
+        #print(repr(mB))
+        #tk = "tken"
+        #print(type(tk))
+        #print(tk)
+       
+        d = r[2]
+        hashM = SHA256.new(d.encode())
+        #dSign = bytes(r[1]['data'], 'utf-8')
+        sg = r[1].encode('ISO-8859-1')
+        #print("Tipo: " + str(r[2]) + '\n')
+        print("\nPubO: " + str(repr(r[0]) + '\n'))
+        print("\nPub: " + repr(r[0].encode('ISO-8859-1')) + '\n')
+        print("Data: " + repr(sg) + '\n')
+
+        try: 
+            pub = RSA.import_key(r[0])
+
+            print("Public Key: " + str(repr(pub)))
+            print("Entrou")
+            pkcs1_15.new(pub).verify(hashM, sg)
+            print("Assinatura Válida.")
+        except (ValueError, TypeError):
+            print("Assinatura Inválida.")
+
+        if r != None:
+            #print("Recebeu a chave pública.")
+            #print((bytes(r[1]['data'], 'utf-8')))
+            #print("Digital signature:" + str(repr(r.encode('ISO-8859-1'))+"\n"))
+            break
     elif num == LIBERAR_R1 and tokenR1 == True:
         #exe = True
         pServer.liberar(1)
