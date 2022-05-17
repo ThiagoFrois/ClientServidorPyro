@@ -19,7 +19,6 @@ token = False
 pServer = Pyro5.api.Proxy("PYRONAME:server")
 
 
-# Ver como receber um notificação
 def pyroThread():
     daemon.requestLoop(); 
 
@@ -39,7 +38,10 @@ listener = threading.Thread(target=pyroThread, daemon=True)
 listener.start()
 
 while(True):
-    print("Token is " + str(token))
+    if token:
+        print("Possui o token.")
+    else:
+        print("Não possui o token")
     print("\nMenu:\nSair ----------- 0\nRequisitar ----- 1\nLiberar -------- 2\nAtualiza Tela -- 3\n")
     num = input("Sua escolha: ")
     os.system('clear')
@@ -51,13 +53,13 @@ while(True):
     elif num == REQUISITAR and token != True:
         r = pServer.requisitar(1, callback)
         if r != None:
-            print("Token: " + r)
+            #print("Token: " + r)
             token = True
     elif num == LIBERAR and token == True:
         r = pServer.liberar(1)
         token = False
-        if r != None:
-            print("Token" + r)
+        #if r != None:
+            #print("Token" + r)
     else:
         if num != ATUALIZAR and num != REQUISITAR and num != LIBERAR:
             print("Escolha inválida!")

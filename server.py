@@ -20,10 +20,10 @@ class Server(object):
         global token
         if token == True:
             token = False
-            print("Token is " + str(token))
+            #print("Token is " + str(token))
             return "True"
         else:
-            print("Token is " + str(token))
+            #print("Token is " + str(token))
             if t == 1:
                 resource1.put(callback)
             #elif t == 2:
@@ -31,13 +31,13 @@ class Server(object):
     def liberar(self, t):
         global token
         token = True
-        print("Token is " + str(token))
+        #print("Token is " + str(token))
         if not resource1.empty():
             call = resource1.get()
             call._pyroClaimOwnership()
             call.notification()
             token = False
-            print("Token is " + str(token))
+            #print("Token is " + str(token))
 
 daemon = Pyro5.server.Daemon() 
 ns = Pyro5.api.locate_ns()
