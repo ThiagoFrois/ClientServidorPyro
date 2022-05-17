@@ -23,10 +23,12 @@ pServer = Pyro5.api.Proxy("PYRONAME:server")
 def pyroThread():
     daemon.requestLoop(); 
 
-@Pyro5.api.expose
 class Client(object):
+    @expose
+    @oneway
     def notification(self):
-        return True
+        global token
+        token = True
 
 callback = Client()
 
@@ -47,14 +49,12 @@ while(True):
         print("Saindo...")
         break
     elif num == REQUISITAR and token != True:
-        print("R")
-        r = pServer.processServer(REQUISICAO)
+        r = pServer.requisitar(1, callback)
         if r != None:
             print("Token: " + r)
             token = True
     elif num == LIBERAR and token == True:
-        print("L")
-        r = pServer.processServer(LIBERACAO)
+        r = pServer.liberar(1)
         token = False
         if r != None:
             print("Token" + r)

@@ -16,16 +16,27 @@ def pyroThread():
 # Preciso criar os outros if's para os recurso dois
 @Pyro5.api.expose
 class Server(object):
-    def processServer(self, t):
+    def requisitar(self, t, callback):
         global token
-        if t == REQUISICAO and token == True:
+        if token == True:
             token = False
             print("Token is " + str(token))
             return "True"
-        elif t == REQUISICAO and token == False:
+        else:
             print("Token is " + str(token))
-        elif t == LIBERACAO:
-            token = True
+            if t == 1:
+                resource1.put(callback)
+            #elif t == 2:
+                #resource2.put(callback)
+    def liberar(self, t):
+        global token
+        token = True
+        print("Token is " + str(token))
+        if not resource1.empty():
+            call = resource1.get()
+            call._pyroClaimOwnership()
+            call.notification()
+            token = False
             print("Token is " + str(token))
 
 daemon = Pyro5.server.Daemon() 
