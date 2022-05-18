@@ -27,68 +27,18 @@ random_seed = Random.new().read
 keyPairR1 = RSA.generate(1024, random_seed)
 pubKeyR1 = keyPairR1.publickey().export_key()
 
-
-keyPairR2 = RSA.generate(1024, random_seed)
-pubKeyR2 = keyPairR2.publickey()
-
- 
 TOKEN = "token"
-
-#print("tk" + str(type(TOKEN)))
-
-#print("Tipo: " + str(type(pubKeyR1)))
 
 hashA = SHA256.new(TOKEN.encode())
 digitalSignR1 = pkcs1_15.new(keyPairR1).sign(hashA)
 
-#digitalSignR2 = pkcs1_15.new(keyPairR2).sign(hashA)
-
-
-#print("digital: " + str(type(digitalSignR1)))
-
 outSign = pubKeyR1.decode('ISO-8859-1')
-
-#print("OUt: " + str(outSign))
 
 data = digitalSignR1
 
-
-#print('\nInput:')
-#print(data)
-#print(type(data))
-  
-# converting
 output = data.decode('ISO-8859-1')
 
-# display output
-#print('\nOutput:')
-#print(output)
-#print(type(output))
-
-
-#print("\nTeste\n\n")
-#print(output.encode('ISO-8859-1'))
-#ds = digitalSignR1().decode()
-
-#print("Tipo: " + repr(type(digitalSignR1)))
-
-#print("Hash A:" + repr(hashA) + "\n")
-
-#print("Digital signature:" + repr(digitalSignR1)+"\n")
-#print("Digital signature:" + repr(digitalSignR2)+"\n")
-
-#print("\nPub: " + str(repr(pubKeyR1)) + '\n')
-#print("Data: " + repr(data) + '\n')
-
 hashB = SHA256.new("token".encode())
-
-'''
-try: 
-    #pkcs1_15.new(pubKeyR1).verify(hashB, data)
-    print("Assinatura Válida.")
-except (ValueError, TypeError):
-    print("Assinatura Inválida.")
-'''
 
 def pyroThread():
     daemon.requestLoop(); 
@@ -98,35 +48,6 @@ timeR2I = time.time()
 
 clientCallR1 = None
 clientCallR2 = None
-
-def pubClassToDict(object):
-    return {
-        "__class__": "pKey",
-    }
-
-def pubDictToClass(classname, d):
-    return pubKeyR1
-    #return RsaKey.publickey()
-
-#register_class_to_dict(pubKeyR1, pubClassToDict)
-
-key = RSA.import_key(open('private_key.der').read())
-
-def signClassToDict(object):
-    return {
-        "__class__" : "digitalSign"
-    }
-
-def signDictToClass(classname, d):
-    return bytes
-
-#register_dict_to_class("pKey", pubDictToClass)
-#register_class_to_dict(RSA.RsaKey, pubClassToDict)
-#register_class_to_dict(pubKeyR1, pubClassToDict)
-
-
-#register_dict_to_class("digitalSign", signDictToClass)
-#register_class_to_dict(bytes, signClassToDict)
 
 @Pyro5.api.expose
 class Server(object):
@@ -138,14 +59,10 @@ class Server(object):
         global clientCallR1
         global clientCallR2
         global firstRequest
-        #print("t = " + str(t))
-        #print("Requisitar")
         if t == 1:
             if tokenR1 == True:
-                #print("Entrou")
                 callback._pyroClaimOwnership()
                 aux = callback.possuiChave()
-                #print("AUXI: " + str(callback.notification(-2)))
 
                 if aux:
                     print("R1: Possui chave!")
@@ -156,15 +73,11 @@ class Server(object):
                 tokenR1 = False
                 timeR1I = time.time()
                 clientCallR1 = callback
-                #print("Digital signature (Teste):" + repr(digitalSignR1)+"\n")
                 return (outSign, output, TOKEN) 
-                #print(type(ds))
-                #return output
             else:
                 resource1.put(callback)
         else:
             if tokenR2 == True:
-                #print("Entrou")
                 callback._pyroClaimOwnership()
                 aux = callback.possuiChave()
                 if aux:
@@ -188,12 +101,9 @@ class Server(object):
         global teste
         global timeR1I
         global timeR2I
-        #print("Liberar")
-        #print("Token is " + str(token))
         if t == 1:
             tokenR1 = True
             if not resource1.empty():
-                #print("Liberar recurso 1")
                 call = resource1.get()
                 call._pyroClaimOwnership()
                 aux = call.possuiChave()
@@ -207,9 +117,7 @@ class Server(object):
 
                 tokenR1 = False
                 timeR1I = time.time()
-                #print(timeR1I)
                 clientCallR1 = call
-                #print("Token is " + str(token))
         else:
             tokenR2 = True
             if not resource2.empty():
@@ -226,7 +134,6 @@ class Server(object):
                 tokenR2 = False
                 timeR2I = time.time()
                 clientCallR2 = call
-                #print("Token is " + str(token))
 
 daemon = Pyro5.server.Daemon() 
 ns = Pyro5.api.locate_ns()
@@ -246,7 +153,6 @@ while(True):
         timeR1 = time.time() - timeR1I
        
         if timeR1 == 5:
-            #print(timeR1I)
             clientCallR1._pyroClaimOwnership()
             aux = clientCallR1.possuiChave()
             if aux:
@@ -255,7 +161,6 @@ while(True):
             else:
                 print("T1: Não possui chave!")
                 clientCallR1.notification(3, output, TOKEN, outSign)
-            #print("Notificação para o recurso 1")
     if not tokenR2:
         timeR2 = time.time() - timeR2I
         if timeR2 == 3:
@@ -267,13 +172,3 @@ while(True):
             else:
                 print("T2: Não possui chave!")
                 clientCallR2.notification(4, output, TOKEN, outSign)
-            #print("Notificação para o recurso 2")
-
-
-         
-    #command = input("Desligar Servidor (S/N)?\n")
-    #if command == 'S' or command == 's':
-       #print("Desligando...")
-       #break;
-
-
