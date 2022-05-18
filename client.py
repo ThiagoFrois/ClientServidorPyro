@@ -79,7 +79,7 @@ class Client(object):
                 print("\nAssinatura Válida.")
             except (ValueError, TypeError):
                 print("\nAssinatura Inválida.")
-                return
+                #return
 
         if t == 1:
             tokenR1 = True
