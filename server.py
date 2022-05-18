@@ -10,14 +10,10 @@ from Crypto import Random
 from _thread import *
 import threading
 
-from Pyro5.api import register_class_to_dict, register_dict_to_class, config
-
 from queue import Queue
 import Pyro5.api
 
 import time
-
-config.SERIALIZER = "serpent"
 
 REQUISICAO = 0
 LIBERACAO = 1

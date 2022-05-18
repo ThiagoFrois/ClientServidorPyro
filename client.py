@@ -7,19 +7,16 @@ from Crypto.Hash import SHA256
 from Crypto.PublicKey import RSA
 from Crypto import Random
 
-import base64
-
 from _thread import *
 import threading
 import time
 
 import signal
 
-
 import sys
 import os
 import Pyro5.api
-from Pyro5.api import expose, callback, Daemon, Proxy, oneway, register_class_to_dict, register_dict_to_class
+from Pyro5.api import expose, callback, Daemon, Proxy, oneway
 
 REQUISICAO = 0
 LIBERACAO = 1
@@ -73,8 +70,6 @@ class Client(object):
         else:
             publica = RSA.import_key(keyP)
  
-
-
         if asgDigi != None and msg != None:
             assina = asgDigi.encode('ISO-8859-1')
             hashB = SHA256.new(msg.encode())
@@ -84,7 +79,7 @@ class Client(object):
                 print("\nAssinatura Válida.")
             except (ValueError, TypeError):
                 print("\nAssinatura Inválida.")
-                #return
+                return
 
         if t == 1:
             tokenR1 = True
@@ -104,8 +99,7 @@ daemon.register(callback)
 
 listener = threading.Thread(target=pyroThread, daemon=True)
 listener.start()
-i = 0
-num = 5
+
 while(True):
     if liberarR1:
         os.system('clear')
