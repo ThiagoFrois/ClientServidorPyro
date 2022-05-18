@@ -28,7 +28,7 @@ REQUISITAR_R2 = '3'
 LIBERAR_R2 = '4'
 ATUALIZAR = '5'
 
-primeiroPedido = True
+possuiChave = False
 
 tokenR1 = False
 tokenR2 = False
@@ -74,21 +74,42 @@ keyP = None
 
 class Client(object):
     @expose
+    def possuiChave(self):
+        global possuiChave
+        #print("\nCHAVE: " + str(repr(possuiChave)))
+        return False
+
+    @expose
     @oneway
-    def notification(self, t, sPub = None, asgDigi = None, msg = None):
+    def notification(self, t, asgDigi = None, msg = None, sPub = None):
         global tokenR1
         global tokenR2
         global liberarR1
         global liberarR2
+        global possuiChave
+        global keyP
        
+        #print("---------- " + str(repr(sPub)))
         if sPub != None:
             publica = RSA.import_key(sPub)
-            keyP = publica
+            keyP = sPub
+            possuiChave = True
+            print('\n\n')
+            print(str(repr(sPub)))
+            print('\n\n')
+
         else:
-            publica = keyP 
+            print('\n\n')
+            print("Já existe")
+            print(str(repr(keyP)))
+            print('\n\n')
+            print(t)
+            publica = RSA.import_key(keyP)
+ 
 
 
         if asgDigi != None and msg != None:
+            print("Teste")
             publica = RSA.import_key(sPub)
             assina = asgDigi.encode('ISO-8859-1')
             hashB = SHA256.new(msg.encode())
@@ -99,6 +120,8 @@ class Client(object):
             except (ValueError, TypeError):
                 print("\nAssinatura Inválida.")
 
+
+        print("AAAAAAAAAAAAAAAAAAAAAAAAAAAA")
         if t == 1:
             tokenR1 = True
         elif t == 2:
@@ -106,6 +129,9 @@ class Client(object):
         elif t == 3:
             tokenR1 = False
             liberarR1 = True
+            print('\n\n\n\n')
+            print(tokenR1)
+            print('\n\n\n\n')
         elif t == 4:
             tokenR2 = False
             liberarR2 = True
@@ -128,6 +154,7 @@ while(True):
         #exe = False
 
     if liberarR2:
+        os.system('clear')
         print("Execedeu o tempo do recurso 2")
         pServer.liberar(2)
         liberarR2 = False
@@ -149,7 +176,7 @@ while(True):
             print("Não possui o token do recurso 2.")
 
         print('\n')
-        print("Primeiro Pedido: " + str(repr(primeiroPedido)))
+        print("Possui chave: " + str(repr(possuiChave)))
         print('\n')
         print("\nMenu:\nSair ------------------------- 0\nRequisitar Recurso 1 --------- 1\nLiberar Recurso 1 ------------ 2\nRequisitar Recurso 2 --------- 3\nLiberar Recurso 2 ------------ 4\nAtualiza Tela ---------------- 5\n")
         try:
@@ -165,8 +192,8 @@ while(True):
         #except:
             #Exception
 
-    if num == REQUISITAR_R1 or num == REQUISITAR_R2:
-        primeiroPedido = False
+    #if num == REQUISITAR_R1 or num == REQUISITAR_R2:
+        #possuiChave = True
 
     if num == SAIR:
         os.system('clear')

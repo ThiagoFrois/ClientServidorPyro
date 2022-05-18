@@ -147,7 +147,16 @@ class Server(object):
             if tokenR1 == True:
                 #print("Entrou")
                 callback._pyroClaimOwnership()
-                callback.notification(1, outSign, output, TOKEN)
+                aux = callback.possuiChave()
+                print("aux: " + str(repr(aux)))
+                #print("AUXI: " + str(callback.notification(-2)))
+
+                if aux:
+                    print("R1: Possui chave!")
+                    callback.notification(1, output, TOKEN)
+                else:
+                    print("R1: Não possui chave!")
+                    callback.notification(1, output, TOKEN, outSign)
                 tokenR1 = False
                 timeR1I = time.time()
                 clientCallR1 = callback
@@ -161,7 +170,14 @@ class Server(object):
             if tokenR2 == True:
                 #print("Entrou")
                 callback._pyroClaimOwnership()
-                callback.notification(2, outSign, output, TOKEN)
+                aux = callback.possuiChave()
+                if aux:
+                    print("R2: Possui chave!")
+                    callback.notification(2, output, TOKEN)
+                else:
+                    print("R2: Não possui chave!")
+                    callback.notification(2, output, TOKEN, outSign)
+
                 tokenR2 = False
                 timeR2I = time.time()
                 clientCallR2 = callback
@@ -184,7 +200,16 @@ class Server(object):
                 #print("Liberar recurso 1")
                 call = resource1.get()
                 call._pyroClaimOwnership()
-                call.notification(1, outSign, output, TOKEN)
+                aux = call.possuiChave()
+                print("aux: " + str(repr(aux)))
+
+                if aux:
+                    print("L1: Possui chave!")
+                    call.notification(1, output, TOKEN)
+                else:
+                    print("L1: Não possui chave!")
+                    call.notification(1, output, TOKEN, outSign)
+
                 tokenR1 = False
                 timeR1I = time.time()
                 #print(timeR1I)
@@ -195,7 +220,14 @@ class Server(object):
             if not resource2.empty():
                 call = resource2.get()
                 call._pyroClaimOwnership()
-                call.notification(2, outSign, output, TOKEN)
+                aux = call.possuiChave()
+                if aux:
+                    print("L2: Possui chave!")
+                    call.notification(2, output, TOKEN)
+                else:
+                    print("L2: Não possui chave!")
+                    call.notification(2, output, TOKEN, outSign)
+                
                 tokenR2 = False
                 timeR2I = time.time()
                 clientCallR2 = call
@@ -221,13 +253,26 @@ while(True):
         if timeR1 == 5:
             #print(timeR1I)
             clientCallR1._pyroClaimOwnership()
-            clientCallR1.notification(3, outSign, output, TOKEN)
+            aux = clientCallR1.possuiChave()
+            print("AUX: " + str(repr(aux)))
+            if aux:
+                print("T1: Possui chave!")
+                clientCallR1.notification(3, output, TOKEN, None)
+            else:
+                print("T1: Não possui chave!")
+                clientCallR1.notification(3, output, TOKEN, outSign)
             #print("Notificação para o recurso 1")
     if not tokenR2:
         timeR2 = time.time() - timeR2I
         if timeR2 == 3:
             clientCallR2._pyroClaimOwnership()
-            clientCallR2.notification(4, outSign, output, TOKEN)
+            aux = clientCallR2.possuiChave()
+            if aux:
+                print("T2: Possui chave!")
+                clientCallR2.notification(4, output, TOKEN)
+            else:
+                print("T2: Não possui chave!")
+                clientCallR2.notification(4, output, TOKEN, outSign)
             #print("Notificação para o recurso 2")
 
 
