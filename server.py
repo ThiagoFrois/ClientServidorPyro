@@ -147,7 +147,7 @@ class Server(object):
             if tokenR1 == True:
                 #print("Entrou")
                 callback._pyroClaimOwnership()
-                callback.notification(1)
+                callback.notification(1, outSign, output, TOKEN)
                 tokenR1 = False
                 timeR1I = time.time()
                 clientCallR1 = callback
@@ -161,7 +161,7 @@ class Server(object):
             if tokenR2 == True:
                 #print("Entrou")
                 callback._pyroClaimOwnership()
-                callback.notification(2)
+                callback.notification(2, outSign, output, TOKEN)
                 tokenR2 = False
                 timeR2I = time.time()
                 clientCallR2 = callback
@@ -184,7 +184,7 @@ class Server(object):
                 #print("Liberar recurso 1")
                 call = resource1.get()
                 call._pyroClaimOwnership()
-                call.notification(1)
+                call.notification(1, outSign, output, TOKEN)
                 tokenR1 = False
                 timeR1I = time.time()
                 #print(timeR1I)
@@ -195,7 +195,7 @@ class Server(object):
             if not resource2.empty():
                 call = resource2.get()
                 call._pyroClaimOwnership()
-                call.notification(2)
+                call.notification(2, outSign, output, TOKEN)
                 tokenR2 = False
                 timeR2I = time.time()
                 clientCallR2 = call
@@ -221,13 +221,13 @@ while(True):
         if timeR1 == 5:
             #print(timeR1I)
             clientCallR1._pyroClaimOwnership()
-            clientCallR1.notification(3)
+            clientCallR1.notification(3, outSign, output, TOKEN)
             #print("Notificação para o recurso 1")
     if not tokenR2:
         timeR2 = time.time() - timeR2I
         if timeR2 == 3:
             clientCallR2._pyroClaimOwnership()
-            clientCallR2.notification(4)
+            clientCallR2.notification(4, outSign, output, TOKEN)
             #print("Notificação para o recurso 2")
 
 

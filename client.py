@@ -71,11 +71,23 @@ def signDictToClass(classname, d):
 class Client(object):
     @expose
     @oneway
-    def notification(self, t):
+    def notification(self, t, sPub = None, asgDigi = None, msg = None):
         global tokenR1
         global tokenR2
         global liberarR1
         global liberarR2
+        
+        if sPub != None and asgDigi != None and msg != None:
+            publica = RSA.import_key(sPub)
+            assina = asgDigi.encode('ISO-8859-1')
+            hashB = SHA256.new(msg.encode())
+
+            try:
+                pkcs1_15.new(publica).verify(hashB, assina)
+                print("Assinatura Válida.")
+            except (ValueError, TypeError):
+                print("Assinatura Inválida.")
+
         if t == 1:
             tokenR1 = True
         elif t == 2:
@@ -173,8 +185,8 @@ while(True):
                 #print("Public Key: " + str(repr(pub)))
                 #print("Entrou")
                 pkcs1_15.new(pub).verify(hashM, sg)
-                print("Assinatura Válida.")
-                time.sleep(1)
+                #print("Assinatura Válida.")
+                #time.sleep(1)
             except (ValueError, TypeError):
                 print("Assinatura Inválida.")
 
