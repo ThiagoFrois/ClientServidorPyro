@@ -1,3 +1,6 @@
+# Nome: Thiago Henrique Frois Menon Cunha
+# Ra: 2128080
+
 from Crypto.Signature import pkcs1_15
 from Crypto.Signature import pss
 from Crypto.Hash import SHA256
