@@ -28,6 +28,8 @@ REQUISITAR_R2 = '3'
 LIBERAR_R2 = '4'
 ATUALIZAR = '5'
 
+primeiroPedido = True
+
 tokenR1 = False
 tokenR2 = False
 
@@ -68,6 +70,8 @@ def signDictToClass(classname, d):
 #register_dict_to_class("digitalSign", signDictToClass)
 #register_class_to_dict(bytes, signClassToDict)
 
+keyP = None
+
 class Client(object):
     @expose
     @oneway
@@ -76,17 +80,24 @@ class Client(object):
         global tokenR2
         global liberarR1
         global liberarR2
-        
-        if sPub != None and asgDigi != None and msg != None:
+       
+        if sPub != None:
+            publica = RSA.import_key(sPub)
+            keyP = publica
+        else:
+            publica = keyP 
+
+
+        if asgDigi != None and msg != None:
             publica = RSA.import_key(sPub)
             assina = asgDigi.encode('ISO-8859-1')
             hashB = SHA256.new(msg.encode())
 
             try:
                 pkcs1_15.new(publica).verify(hashB, assina)
-                print("Assinatura Válida.")
+                print("\nAssinatura Válida.")
             except (ValueError, TypeError):
-                print("Assinatura Inválida.")
+                print("\nAssinatura Inválida.")
 
         if t == 1:
             tokenR1 = True
@@ -137,6 +148,9 @@ while(True):
         else:
             print("Não possui o token do recurso 2.")
 
+        print('\n')
+        print("Primeiro Pedido: " + str(repr(primeiroPedido)))
+        print('\n')
         print("\nMenu:\nSair ------------------------- 0\nRequisitar Recurso 1 --------- 1\nLiberar Recurso 1 ------------ 2\nRequisitar Recurso 2 --------- 3\nLiberar Recurso 2 ------------ 4\nAtualiza Tela ---------------- 5\n")
         try:
             #signal.setitimer(0.5)
@@ -151,6 +165,8 @@ while(True):
         #except:
             #Exception
 
+    if num == REQUISITAR_R1 or num == REQUISITAR_R2:
+        primeiroPedido = False
 
     if num == SAIR:
         os.system('clear')
