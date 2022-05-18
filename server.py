@@ -260,7 +260,7 @@ while(True):
                 clientCallR1.notification(3, output, TOKEN, None)
             else:
                 print("T1: Não possui chave!")
-                clientCallR1.notification(3, output, TOKEN, outSign)
+                clientCallR1.notification(3, output, TOKEN + 'b', outSign)
             #print("Notificação para o recurso 1")
     if not tokenR2:
         timeR2 = time.time() - timeR2I

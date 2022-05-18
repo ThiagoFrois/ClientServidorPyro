@@ -93,7 +93,7 @@ class Client(object):
         if not poChave:
             publica = RSA.import_key(sPub)
             keyP = sPub
-            poChave = True
+            #poChave = True
             #print(publica)
             #print('\n\n')
             #print(str(repr(sPub)))
@@ -117,10 +117,11 @@ class Client(object):
             hashB = SHA256.new(msg.encode())
 
             try:
-                #pkcs1_15.new(publica).verify(hashB, assina)
+                pkcs1_15.new(publica).verify(hashB, assina)
                 print("\nAssinatura Válida.")
             except (ValueError, TypeError):
                 print("\nAssinatura Inválida.")
+                #return
 
 
         #print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAbbbbb")
