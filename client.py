@@ -77,7 +77,8 @@ class Client(object):
     def possuiChave(self):
         global poChave
         #print("\nCHAVE: " + str(repr(possuiChave)))
-        return False
+        #return False
+        return poChave
     @expose
     @oneway
     def notification(self, t, asgDigi = None, msg = None, sPub = None):
@@ -93,7 +94,7 @@ class Client(object):
         if not poChave:
             publica = RSA.import_key(sPub)
             keyP = sPub
-            #poChave = True
+            poChave = True
             #print(publica)
             #print('\n\n')
             #print(str(repr(sPub)))
@@ -112,7 +113,7 @@ class Client(object):
 
         if asgDigi != None and msg != None:
             #print("Teste")
-            publica = RSA.import_key(sPub)
+            #publica = RSA.import_key(sPub)
             assina = asgDigi.encode('ISO-8859-1')
             hashB = SHA256.new(msg.encode())
 
@@ -181,7 +182,7 @@ while(True):
             print("Não possui o token do recurso 2.")
 
         #print('\n')
-        #print("Possui chave: " + str(repr(possuiChave)))
+        print("Possui chave: " + str(repr(poChave)))
         #print('\n')
         print("\nMenu:\nSair ------------------------- 0\nRequisitar Recurso 1 --------- 1\nLiberar Recurso 1 ------------ 2\nRequisitar Recurso 2 --------- 3\nLiberar Recurso 2 ------------ 4\nAtualiza Tela ---------------- 5\n")
         try:

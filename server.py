@@ -34,9 +34,9 @@ pubKeyR2 = keyPairR2.publickey()
  
 TOKEN = "token"
 
-print("tk" + str(type(TOKEN)))
+#print("tk" + str(type(TOKEN)))
 
-print("Tipo: " + str(type(pubKeyR1)))
+#print("Tipo: " + str(type(pubKeyR1)))
 
 hashA = SHA256.new(TOKEN.encode())
 digitalSignR1 = pkcs1_15.new(keyPairR1).sign(hashA)
@@ -44,11 +44,11 @@ digitalSignR1 = pkcs1_15.new(keyPairR1).sign(hashA)
 #digitalSignR2 = pkcs1_15.new(keyPairR2).sign(hashA)
 
 
-print("digital: " + str(type(digitalSignR1)))
+#print("digital: " + str(type(digitalSignR1)))
 
 outSign = pubKeyR1.decode('ISO-8859-1')
 
-print("OUt: " + str(outSign))
+#print("OUt: " + str(outSign))
 
 data = digitalSignR1
 
@@ -77,17 +77,18 @@ output = data.decode('ISO-8859-1')
 #print("Digital signature:" + repr(digitalSignR1)+"\n")
 #print("Digital signature:" + repr(digitalSignR2)+"\n")
 
-print("\nPub: " + str(repr(pubKeyR1)) + '\n')
-print("Data: " + repr(data) + '\n')
+#print("\nPub: " + str(repr(pubKeyR1)) + '\n')
+#print("Data: " + repr(data) + '\n')
 
 hashB = SHA256.new("token".encode())
 
-
+'''
 try: 
     #pkcs1_15.new(pubKeyR1).verify(hashB, data)
     print("Assinatura Válida.")
 except (ValueError, TypeError):
     print("Assinatura Inválida.")
+'''
 
 def pyroThread():
     daemon.requestLoop(); 
@@ -110,10 +111,6 @@ def pubDictToClass(classname, d):
 #register_class_to_dict(pubKeyR1, pubClassToDict)
 
 key = RSA.import_key(open('private_key.der').read())
-
-print("TIPO DA CHAVE: " + str(type(key)))
-
-#priv = "MIICWwIBAAKBgG3u4n82BqIIY7dtSIZcOYHtYv3ErijZzQaPK52HeKYxgrWH1Mvx stQI6+SMJXhJPYkWWVPTqkWtkVPC1yidqLkYT6cJSTtg9LE2QsueHKVZfjEKZfnv NJ4c07Sky9R28TXnG816VorxyrHSzocCvcfb54cswxuaD8UfocjMyK1TAgMBAAEC gYBWs2uw1oQesK0sUiU7ymqUfQtwhviwQS5A+RN19w0BTdT/pHQAsMvQDIU2yA0Z M/IzNwwWX75Pm9cdD3KvlsAkyfJCqPoPOT5Y1r0GfpaS15Hz+hLKWdu0tQfR/nq/ mFgOViMi5JdCO3OBsIYYc/8HJeXtZIUF1BjVhnWgck/ieQJBALFCHge1A4+iiJBs pVlL0pG/GYQUXRKE7+S+ega6hWa9vWui1MzQc7aO3nFPO6J6Prx7LBdKxdqWRt9Z sIWh/A8CQQCexIbOUCEyQY0kOZt4kCvRUQLe+gdYkVEIIaLGda8I86Y3YgEz/nYx z0R/7w53BmBrlqMd0Y34+W7hfhJnc8Z9AkA+GOqKSqivtgHfjqAyczSWaHsY4UVl ynp8CRqYptk7D/d+8LFZ+yC+cLiOu3IpzmeSAhiFJGXB2OmFL1d+ySuTAkBWEaQi 5D2ayP6CzNgDm+SlLI2p41FoKh8LkXB0tgeVisBo9bBBR4k7p2kzEZ192O8cZCU5 XQjiGBaMF5RSkOjhAkEAhcM6XV6yWWdqzs0SUJbLtaYK4Hv1Z89f00QWlDXN6W55 69J8n3Niy6jCTqjr3hD6HWCx0ygUulgRC29Suioi8Q=="
 
 def signClassToDict(object):
     return {
@@ -148,7 +145,6 @@ class Server(object):
                 #print("Entrou")
                 callback._pyroClaimOwnership()
                 aux = callback.possuiChave()
-                print("aux: " + str(repr(aux)))
                 #print("AUXI: " + str(callback.notification(-2)))
 
                 if aux:
@@ -201,7 +197,6 @@ class Server(object):
                 call = resource1.get()
                 call._pyroClaimOwnership()
                 aux = call.possuiChave()
-                print("aux: " + str(repr(aux)))
 
                 if aux:
                     print("L1: Possui chave!")
@@ -254,10 +249,9 @@ while(True):
             #print(timeR1I)
             clientCallR1._pyroClaimOwnership()
             aux = clientCallR1.possuiChave()
-            print("AUX: " + str(repr(aux)))
             if aux:
                 print("T1: Possui chave!")
-                clientCallR1.notification(3, output, TOKEN, None)
+                clientCallR1.notification(3, output, TOKEN)
             else:
                 print("T1: Não possui chave!")
                 clientCallR1.notification(3, output, TOKEN, outSign)
