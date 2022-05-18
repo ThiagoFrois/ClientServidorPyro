@@ -28,7 +28,7 @@ REQUISITAR_R2 = '3'
 LIBERAR_R2 = '4'
 ATUALIZAR = '5'
 
-possuiChave = False
+poChave = False
 
 tokenR1 = False
 tokenR2 = False
@@ -75,10 +75,9 @@ keyP = None
 class Client(object):
     @expose
     def possuiChave(self):
-        global possuiChave
+        global poChave
         #print("\nCHAVE: " + str(repr(possuiChave)))
         return False
-
     @expose
     @oneway
     def notification(self, t, asgDigi = None, msg = None, sPub = None):
@@ -86,52 +85,56 @@ class Client(object):
         global tokenR2
         global liberarR1
         global liberarR2
-        global possuiChave
+        global poChave
         global keyP
        
         #print("---------- " + str(repr(sPub)))
-        if sPub != None:
+        #print("CHAVE: " + str(repr(poChave)))
+        if not poChave:
             publica = RSA.import_key(sPub)
             keyP = sPub
-            possuiChave = True
-            print('\n\n')
-            print(str(repr(sPub)))
-            print('\n\n')
+            poChave = True
+            #print(publica)
+            #print('\n\n')
+            #print(str(repr(sPub)))
+            #print('\n\n')
 
         else:
-            print('\n\n')
-            print("Já existe")
-            print(str(repr(keyP)))
-            print('\n\n')
-            print(t)
+            #print('\n\n')
+            #print("Já existe")
+            #print(str(repr(keyP)))
+            #print('\n\n')
+            #print(t)
             publica = RSA.import_key(keyP)
+            #print(publica)
  
 
 
         if asgDigi != None and msg != None:
-            print("Teste")
+            #print("Teste")
             publica = RSA.import_key(sPub)
             assina = asgDigi.encode('ISO-8859-1')
             hashB = SHA256.new(msg.encode())
 
             try:
-                pkcs1_15.new(publica).verify(hashB, assina)
+                #pkcs1_15.new(publica).verify(hashB, assina)
                 print("\nAssinatura Válida.")
             except (ValueError, TypeError):
                 print("\nAssinatura Inválida.")
 
 
-        print("AAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+        #print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAbbbbb")
         if t == 1:
             tokenR1 = True
         elif t == 2:
             tokenR2 = True
         elif t == 3:
+            #print("KKKKkkkKKKkkkKKKHFHDA")
             tokenR1 = False
             liberarR1 = True
-            print('\n\n\n\n')
-            print(tokenR1)
-            print('\n\n\n\n')
+            #print('\n\n\n\n')
+            #print(tokenR1)
+            #print('\n\n\n\n')
         elif t == 4:
             tokenR2 = False
             liberarR2 = True
@@ -146,6 +149,7 @@ listener.start()
 i = 0
 num = 5
 while(True):
+    #print("OLA")
     if liberarR1:
         os.system('clear')
         print("Excedeu o tempo do recurso 1")
@@ -175,9 +179,9 @@ while(True):
         else:
             print("Não possui o token do recurso 2.")
 
-        print('\n')
-        print("Possui chave: " + str(repr(possuiChave)))
-        print('\n')
+        #print('\n')
+        #print("Possui chave: " + str(repr(possuiChave)))
+        #print('\n')
         print("\nMenu:\nSair ------------------------- 0\nRequisitar Recurso 1 --------- 1\nLiberar Recurso 1 ------------ 2\nRequisitar Recurso 2 --------- 3\nLiberar Recurso 2 ------------ 4\nAtualiza Tela ---------------- 5\n")
         try:
             #signal.setitimer(0.5)
@@ -201,7 +205,7 @@ while(True):
         break
     elif num == REQUISITAR_R1 and tokenR1 != True:
         #exe = True
-        r = pServer.requisitar(1, callback)
+        pServer.requisitar(1, callback)
         
         #print('\n')
         #print(r)
@@ -212,7 +216,7 @@ while(True):
         #tk = "tken"
         #print(type(tk))
         #print(tk)
-         
+        '''
         if r != None:
             d = r[2]
             hashM = SHA256.new(d.encode())
@@ -232,7 +236,7 @@ while(True):
                 #time.sleep(1)
             except (ValueError, TypeError):
                 print("Assinatura Inválida.")
-
+        '''
         #if r != None:
             #print("Recebeu a chave pública.")
             #print((bytes(r[1]['data'], 'utf-8')))
